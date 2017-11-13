@@ -2,6 +2,11 @@ define(['require', 'module', 'jquery', 'URIjs', './discover_content_type', './Zi
     function(require, module, $, URI, ContentTypeDiscovery, ZipUtils, Utils) {
 
   function fetchFileContents(archiveFilePath, pathRelativeToPackageRoot, readCallback, onerror) {
+    var scheme = 'file://';
+    if (archiveFilePath.startsWith(scheme)) {
+        archiveFilePath = archiveFilePath.substring(scheme.length);
+    }
+
     ZipUtils.extract(archiveFilePath, pathRelativeToPackageRoot)
       .done(readCallback)
       .fail(onerror);
@@ -70,6 +75,31 @@ define(['require', 'module', 'jquery', 'URIjs', './discover_content_type', './Zi
       var packageDom = self.parentFetcher.markupParser.parseXml(packageXml);
       callback(packageDom);
     }, onerror);
+  };
+
+  LinkResourceFetcher.prototype.resolveURI = function (pathRelativeToPackageRoot) {
+
+      var pathRelativeToPackageRootUri = undefined;
+      try {
+          pathRelativeToPackageRootUri = new URI(pathRelativeToPackageRoot);
+      } catch(err) {
+          console.error(err);
+          console.log(pathRelativeToPackageRoot);
+      }
+      if (pathRelativeToPackageRootUri && pathRelativeToPackageRootUri.is("absolute")) return pathRelativeToPackageRoot; //pathRelativeToPackageRootUri.scheme() == "http://", "https://", "data:", etc.
+
+
+      var url = this.parentFetcher.getEbookURL_FilePath();
+
+      try {
+          //url = new URI(relativeUrl).absoluteTo(url).search('').hash('').toString();
+          url = new URI(url).search('').hash('').toString();
+      } catch(err) {
+          console.error(err);
+          console.log(url);
+      }
+
+      return url + (url.charAt(url.length-1) == '/' ? "" : "/") + pathRelativeToPackageRoot;
   };
 
   return LinkResourceFetcher;

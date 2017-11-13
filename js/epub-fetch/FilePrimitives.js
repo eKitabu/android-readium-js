@@ -1,9 +1,12 @@
 define(['./Utils', './Runtime', /*'cordova/cordova',*/ './DirectoryAccessor'],
   function(Utils, Runtime, /*Cordova,*/ DirectoryAccessor) {
-    var Cordova = cordova;
+
   function getRootDirUri() {
-    var rootDir = Cordova.isPlatform('android') ? 'externalApplicationStorageDirectory' : 'dataDirectory';
-    return window.cordova.file[rootDir];
+    // TODO: Use the root directory for now -- etsakov@2017.11.13
+    // var rootDir = Cordova.isPlatform('android') ? 'externalApplicationStorageDirectory' : 'dataDirectory';
+    // return window.cordova.file[rootDir];
+
+    return "file:///";
   }
 
   function resolve(dirUri) {
@@ -51,7 +54,9 @@ define(['./Utils', './Runtime', /*'cordova/cordova',*/ './DirectoryAccessor'],
   }
 
   function supportsLocationSelection() {
-    return Cordova.isPlatform('android');
+    // TODO: cordova-plugin-device is not installed yet -- etsakov@2017.11.13
+    // return Cordova.isPlatform('android');
+    return true;
   }
 
   function fileSystemName() {

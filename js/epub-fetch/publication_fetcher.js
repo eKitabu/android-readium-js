@@ -95,7 +95,7 @@ define(['jquery', 'URIjs', './markup_parser', './plain_resource_fetcher', './zip
         }
 
         function createResourceFetcher(isExploded, callback) {
-            _resourceFetcher = new LinkResourceFetcher(self);
+            _resourceFetcher = new LinkResourceFetcher(self, ebookURL);
             callback(_resourceFetcher);
             return;
 
@@ -441,7 +441,9 @@ define(['jquery', 'URIjs', './markup_parser', './plain_resource_fetcher', './zip
         };
 
         this.getDecryptionFunctionForRelativePath = function(pathRelativeToRoot) {
-            return _encryptionHandler.getDecryptionFunctionForRelativePath(pathRelativeToRoot);
+            // TODO: Disable encryption for now. -- etsakov@2017.11.13
+            // return _encryptionHandler.getDecryptionFunctionForRelativePath(pathRelativeToRoot);
+            return undefined;
         }
     };
 
