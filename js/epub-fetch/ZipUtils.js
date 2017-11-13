@@ -31,7 +31,7 @@ define(['./FileStorage'], function(FileStorage) {
 
         sync(function() {
           return window.Link.getResource(
-            archiveUrl,
+            archiveFilePath,
             pathRelativeToPackageRoot
           ).then(result.resolve, result.reject);
         });

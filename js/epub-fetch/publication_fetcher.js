@@ -137,9 +137,11 @@ define(['jquery', 'URIjs', './markup_parser', './plain_resource_fetcher', './zip
          * the base URI of their content document.
          */
         this.shouldFetchMediaAssetsProgrammatically = function() {
+            // TODO: Always fetch programmatically -- etsakov@2017.11.13
+            // var ret = _shouldConstructDomProgrammatically && !isExploded();
+            // return ret;
 
-            var ret = _shouldConstructDomProgrammatically && !isExploded();
-            return ret;
+            return true;
         };
 
         this.getEbookURL = function() {
