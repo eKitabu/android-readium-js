@@ -54,9 +54,7 @@ define(['./Utils', './Runtime', /*'cordova/cordova',*/ './DirectoryAccessor'],
   }
 
   function supportsLocationSelection() {
-    // TODO: cordova-plugin-device is not installed yet -- etsakov@2017.11.13
-    // return Cordova.isPlatform('android');
-    return true;
+    return device.platform === 'Android';
   }
 
   function fileSystemName() {

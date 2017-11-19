@@ -84,9 +84,9 @@ define(['cryptoJs/sha1', './LCPDecryptor', './Utils'], function (CryptoJS_SHA1, 
         }
 
         function decryptAES(buffer, callback, onerror) {
-          // TODO: The content key is not encrypted. -- etsakov@2017.11.19
-          var contentKey = Utils.str2buf(atob(encryptionData.encryptedContentKey));
-          return LCPDecryptor.decryptAES(contentKey, buffer)
+          // TODO: The content key is currently decrypted on every fetch rather
+          // than being cached during the reading session. -- etsakov@2017.11.19
+          return LCPDecryptor.decrypt(encryptionData.encryptedContentKey, buffer)
             .then(callback, onerror);
         };
 
