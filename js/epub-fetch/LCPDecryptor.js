@@ -4,18 +4,19 @@ define(['./Utils', './Crypto'], function(Utils, Crypto) {
 
   function aesDecryption(key, encryptedData) {
     return Crypto.importKey(
-        "raw",
-        key, {
-          name: "AES-CBC"
-        },
-        false, ["decrypt"]
+        'raw',
+        key,
+        { name: 'AES-CBC' },
+        false,
+        ['decrypt']
       )
-      .then(function(key) {
-        return Crypto.decrypt({
-            name: "AES-CBC",
+      .then(function(cryptoKey) {
+        return Crypto.decrypt(
+          {
+            name: 'AES-CBC',
             iv: encryptedData.slice(0, AES_BLOCKSIZE)
           },
-          key,
+          cryptoKey,
           encryptedData.slice(AES_BLOCKSIZE)
         );
       });
@@ -30,13 +31,13 @@ define(['./Utils', './Crypto'], function(Utils, Crypto) {
     //base 64 decode the key
     var keyCheckDecoded = atob(keyCheck);
     if (keyCheckDecoded.length <= AES_BLOCKSIZE) {
-      return reject("Key check is short");
+      return reject('Key check is short');
     }
 
     // base 64 decode the encrypted value
     var encryptedValueDecoded = atob(encryptedValue);
     if (encryptedValueDecoded.length <= AES_BLOCKSIZE) {
-      return reject("Encrypted value is short");
+      return reject('Encrypted value is short');
     }
 
     // convert passphrase to bytes
@@ -44,7 +45,7 @@ define(['./Utils', './Crypto'], function(Utils, Crypto) {
 
     // get sha-256 hash of passphrase
     return Crypto.digest({
-          name: "SHA-256"
+          name: 'SHA-256'
         },
         passphraseBuf
       ).then(function(sha) {
@@ -55,7 +56,7 @@ define(['./Utils', './Crypto'], function(Utils, Crypto) {
 
             // verify the passphrase and key check
             if (keyCheckStr !== id) {
-              return reject("wrong passphrase");
+              return reject('wrong passphrase');
             }
 
             return Utils.str2buf(encryptedValueDecoded);
@@ -84,6 +85,9 @@ define(['./Utils', './Crypto'], function(Utils, Crypto) {
   };
 
   return {
-    create: create
+    // TODO: The `create` method is currently unused as the content key
+    // is not encrypted. -- etsakov@2017.11.19
+    // create: create,
+    decryptAES: aesDecryption
   };
 });

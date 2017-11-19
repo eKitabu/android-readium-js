@@ -418,34 +418,33 @@ define(['jquery', 'URIjs', './markup_parser', './plain_resource_fetcher', './zip
 
         // Currently needed for deobfuscating fonts
         this.setPackageMetadata = function(packageMetadata, settingFinishedCallback) {
+            function onError (error) {
+              _encryptionHandler = new EncryptionHandler(undefined);
+              settingFinishedCallback();
+            }
 
             self.getXmlFileDom('/META-INF/encryption.xml', function (encryptionDom) {
 
+              self.getFileContentsFromPackage('/.key', function (contentKeyBase64) {
                 var encryptionData = EncryptionHandler.CreateEncryptionData(packageMetadata.id, encryptionDom);
+                encryptionData.encryptedContentKey = contentKeyBase64;
 
                 _encryptionHandler = new EncryptionHandler(encryptionData);
 
                 if (_encryptionHandler.isEncryptionSpecified()) {
-                    // EPUBs that use encryption for any resources should be fetched in a programmatical manner:
-                    _shouldConstructDomProgrammatically = true;
-                    console.log("_shouldConstructDomProgrammatically ENCRYPTION ACTIVE: " + _shouldConstructDomProgrammatically);
+                  // EPUBs that use encryption for any resources should be fetched in a programmatical manner:
+                  _shouldConstructDomProgrammatically = true;
+                  console.log("_shouldConstructDomProgrammatically ENCRYPTION ACTIVE: " + _shouldConstructDomProgrammatically);
                 }
 
                 settingFinishedCallback();
-
-
-            }, function(error){
-
-                _encryptionHandler = new EncryptionHandler(undefined);
-
-                settingFinishedCallback();
-            });
+              }, onError);
+            }, onError);
         };
 
         this.getDecryptionFunctionForRelativePath = function(pathRelativeToRoot) {
-            // TODO: Disable encryption for now. -- etsakov@2017.11.13
-            // return _encryptionHandler.getDecryptionFunctionForRelativePath(pathRelativeToRoot);
-            return undefined;
+            return _encryptionHandler
+              && _encryptionHandler.getDecryptionFunctionForRelativePath(pathRelativeToRoot);
         }
     };
 

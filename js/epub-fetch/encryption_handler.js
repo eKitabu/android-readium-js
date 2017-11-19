@@ -11,7 +11,7 @@
 //  used to endorse or promote products derived from this software without specific
 //  prior written permission.
 
-define(['cryptoJs/sha1', './LCPDecryptor'], function (CryptoJS_SHA1, LCPDecryptor) {
+define(['cryptoJs/sha1', './LCPDecryptor', './Utils'], function (CryptoJS_SHA1, LCPDecryptor, Utils) {
 
     var EncryptionHandler = function (encryptionData) {
         var self = this;
@@ -19,7 +19,7 @@ define(['cryptoJs/sha1', './LCPDecryptor'], function (CryptoJS_SHA1, LCPDecrypto
         var ENCRYPTION_METHODS = {
             'http://www.idpf.org/2008/embedding': embeddedFontDeobfuscateIdpf,
             'http://ns.adobe.com/pdf/enc#RC': embeddedFontDeobfuscateAdobe,
-            'http://www.w3.org/2001/04/xmlenc#aes256-cbc': () => {}
+            'http://www.w3.org/2001/04/xmlenc#aes256-cbc': decryptAES
         };
 
         // INTERNAL FUNCTIONS
@@ -82,6 +82,13 @@ define(['cryptoJs/sha1', './LCPDecryptor'], function (CryptoJS_SHA1, LCPDecrypto
 
             xorObfuscatedBlob(obfuscatedResourceBlob, prefixLength, uidWordArray, callback)
         }
+
+        function decryptAES(buffer, callback, onerror) {
+          // TODO: The content key is not encrypted. -- etsakov@2017.11.19
+          var contentKey = Utils.str2buf(atob(encryptionData.encryptedContentKey));
+          return LCPDecryptor.decryptAES(contentKey, buffer)
+            .then(callback, onerror);
+        };
 
 
         // PUBLIC API
