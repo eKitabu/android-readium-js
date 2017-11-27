@@ -132,6 +132,9 @@ define(['URIjs', 'readium_shared_js/views/iframe_loader', 'underscore', './disco
             iframe.onload = function () {
                 var doc = iframe.contentDocument || iframe.contentWindow.document;
 
+                // Disable user selection.
+                $(doc).find('body').css('-webkit-user-select', 'none');
+
                 // $('iframe', doc).each(function(i, child_iframe){
                 //     console.debug(child_iframe);
                 //     console.log(child_iframe.attr("data-src"));
