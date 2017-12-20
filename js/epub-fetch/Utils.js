@@ -52,6 +52,13 @@ define(function() {
 
   Utils.deferizeOneCallback = deferizeWith(oneCallback);
 
+  Utils.deferizePromise = function (promise) {
+    var deferred = $.Deferred();
+    promise.then(deferred.resolve, deferred.reject);
+
+    return deferred.promise();
+  };
+
   Utils.toJqPromise = function(func) {
     return function( /*args...*/ ) {
       var defer = $.Deferred(),
