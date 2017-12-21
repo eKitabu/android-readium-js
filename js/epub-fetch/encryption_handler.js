@@ -25,6 +25,11 @@ define(['cryptoJs/sha1', './LCPDecryptor', './Utils'], function (CryptoJS_SHA1, 
         // INTERNAL FUNCTIONS
 
         function blob2BinArray(blob, callback) {
+            if (blob instanceof ArrayBuffer) {
+                callback(new Uint8Array(blob));
+                return;
+            }
+
             var fileReader = new FileReader();
             fileReader.onload = function () {
                 var arrayBuffer = this.result;
